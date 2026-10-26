@@ -13,11 +13,11 @@
 // against the Console. Values marked "REQUIRED" must be filled in by you.
 
 export const firebaseConfig = {
-  apiKey: "REPLACE_WITH_YOUR_WEB_API_KEY",                 // REQUIRED
+  apiKey: "AIzaSyCDRBTBJmVAFicpeKl5x6eMBfGY7Q9HQRM",                 // REQUIRED
   authDomain: "exp-track-suyash.firebaseapp.com",           // VERIFY
   databaseURL: "https://exp-track-suyash-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "exp-track-suyash",                            // VERIFY
   storageBucket: "exp-track-suyash.firebasestorage.app",    // VERIFY (not used by the app)
-  messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",         // REQUIRED
-  appId: "REPLACE_WITH_YOUR_APP_ID"                         // REQUIRED
+  messagingSenderId: "1077911616498",         // REQUIRED
+  appId: "1:1077911616498:web:cacadd7013b245de03c96b"                         // REQUIRED
 };
