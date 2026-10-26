@@ -1,0 +1,175 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'",
+        ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'",
+        "profile": {
+          "displayName": {
+            ".validate": "newData.isString() && newData.val().length <= 60"
+          },
+          "email": {
+            ".validate": "newData.isString() && newData.val().length <= 120"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "settings": {
+          "seeded": {
+            ".validate": "newData.isBoolean()"
+          },
+          "currency": {
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Z]{3}$/)"
+          },
+          "theme": {
+            ".validate": "newData.val() === 'system' || newData.val() === 'light' || newData.val() === 'dark'"
+          },
+          "dateFormat": {
+            ".validate": "newData.val() === 'DD MMM YYYY' || newData.val() === 'DD/MM/YYYY' || newData.val() === 'YYYY-MM-DD'"
+          },
+          "primaryAccountId": {
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.parent().parent().child('accounts').child(newData.val()).exists() && newData.parent().parent().child('accounts').child(newData.val()).child('active').val() === true"
+          },
+          "lockEnabled": {
+            ".validate": "newData.isBoolean()"
+          },
+          "lockAfterMin": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1440"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "accounts": {
+          "$accountId": {
+            ".validate": "$accountId.matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.hasChildren(['name', 'type', 'openingBalance', 'active', 'createdAt', 'updatedAt'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+            },
+            "type": {
+              ".validate": "newData.isString() && (newData.val() === 'savings' || newData.val() === 'current' || newData.val() === 'salary' || newData.val() === 'cash' || newData.val() === 'credit_card' || newData.val() === 'wallet' || newData.val() === 'other')"
+            },
+            "bankName": {
+              ".validate": "newData.isString() && newData.val().length <= 60"
+            },
+            "nickname": {
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            },
+            "openingBalance": {
+              ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() >= -100000000000 && newData.val() <= 100000000000"
+            },
+            "color": {
+              ".validate": "newData.isString() && newData.val().matches(/^#[0-9a-fA-F]{6}$/)"
+            },
+            "icon": {
+              ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{1,32}$/)"
+            },
+            "active": {
+              ".validate": "newData.isBoolean()"
+            },
+            "createdAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "categories": {
+          "$categoryId": {
+            ".validate": "$categoryId.matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.hasChildren(['name', 'type', 'createdAt', 'updatedAt'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 40"
+            },
+            "type": {
+              ".validate": "newData.val() === 'expense' || newData.val() === 'income'"
+            },
+            "icon": {
+              ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{1,32}$/)"
+            },
+            "color": {
+              ".validate": "newData.isString() && newData.val().matches(/^#[0-9a-fA-F]{6}$/)"
+            },
+            "builtIn": {
+              ".validate": "newData.isBoolean()"
+            },
+            "archived": {
+              ".validate": "newData.isBoolean()"
+            },
+            "sortOrder": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000"
+            },
+            "createdAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "transactions": {
+          ".indexOn": [
+            "date"
+          ],
+          "$txId": {
+            ".validate": "$txId.matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.hasChildren(['type', 'amount', 'date', 'accountId', 'createdAt', 'updatedAt']) && ((newData.child('type').val() === 'transfer' && newData.hasChild('toAccountId') && !newData.hasChild('categoryId') && !newData.hasChild('categoryName') && newData.child('toAccountId').val() !== newData.child('accountId').val()) || ((newData.child('type').val() === 'expense' || newData.child('type').val() === 'income') && newData.hasChildren(['categoryId', 'categoryName']) && !newData.hasChild('toAccountId') && newData.parent().parent().child('categories').child(newData.child('categoryId').val()).child('type').val() === newData.child('type').val()))",
+            "type": {
+              ".validate": "newData.val() === 'expense' || newData.val() === 'income' || newData.val() === 'transfer'"
+            },
+            "amount": {
+              ".validate": "newData.isNumber() && newData.val() % 1 === 0 && newData.val() > 0 && newData.val() <= 100000000000"
+            },
+            "date": {
+              ".validate": "newData.isString() && newData.val().matches(/^[0-9]{4}-[0-1][0-9]-[0-3][0-9]$/)"
+            },
+            "accountId": {
+              ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.parent().parent().parent().child('accounts').child(newData.val()).exists()"
+            },
+            "toAccountId": {
+              ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.parent().parent().parent().child('accounts').child(newData.val()).exists()"
+            },
+            "categoryId": {
+              ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.parent().parent().parent().child('categories').child(newData.val()).exists()"
+            },
+            "categoryName": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 40"
+            },
+            "description": {
+              ".validate": "newData.isString() && newData.val().length <= 200"
+            },
+            "reference": {
+              ".validate": "newData.isString() && newData.val().length <= 100"
+            },
+            "notes": {
+              ".validate": "newData.isString() && newData.val().length <= 500"
+            },
+            "createdAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

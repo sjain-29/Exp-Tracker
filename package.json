@@ -1,0 +1,16 @@
+{
+  "name": "paisapilot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PaisaPilot - Every Rupee, Under Control. Static PWA; npm is only needed for the optional security-rules tests.",
+  "type": "module",
+  "scripts": {
+    "serve": "npx --yes http-server -c-1 -p 8080 .",
+    "test:rules": "firebase emulators:exec --only database --project demo-paisapilot \"node --test tests/\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "firebase": "^13.1.0",
+    "firebase-tools": "^15.34.1"
+  }
+}
